@@ -1,0 +1,60 @@
+{
+  "agent_version": "0.1.4-pilot",
+  "sharex_profile_version": "pilot-5",
+  "poll_interval_seconds": 2,
+  "retry_backoff_seconds": 15,
+  "retry_backoff_max_seconds": 300,
+  "max_retry_attempts": 0,
+  "delete_local_after_success": true,
+  "log_level": "INFO",
+  "paths": {
+    "spool_dir": "%ProgramData%\\ScreenshotAudit\\spool",
+    "tmp_dir": "%ProgramData%\\ScreenshotAudit\\tmp",
+    "db_path": "%ProgramData%\\ScreenshotAudit\\data\\queue.db",
+    "log_path": "%ProgramData%\\ScreenshotAudit\\logs\\agent.log"
+  },
+  "watermark": {
+    "enabled": true,
+    "logo_path": "%ProgramData%\\ScreenshotAudit\\assets\\logo.png"
+  },
+  "external_ip_services": [
+    "https://api64.ipify.org",
+    "https://ifconfig.me/ip",
+    "https://icanhazip.com"
+  ],
+  "external_ip_timeout_seconds": 5,
+  "external_ip_cache_ttl_seconds": 300,
+  "routing": {
+    "force_tenant": "",
+    "default_tenant": "bases-e-lojas",
+    "default_bucket": "sharex-data-bases-e-lojas",
+    "tenant_buckets": {
+      "clickip": "sharex-data-clickip",
+      "fiber": "sharex-data-fiber",
+      "intlink": "sharex-data-intlink",
+      "bases-e-lojas": "sharex-data-bases-e-lojas"
+    },
+    "external_ip_map": {
+      "EXTERNAL_IP_CLICKIP": "clickip",
+      "EXTERNAL_IP_FIBER": "fiber",
+      "EXTERNAL_IP_INTLINK": "intlink"
+    }
+  },
+  "minio": {
+    "endpoint_url": "http://s3.homelab.local",
+    "access_key": "admin",
+    "secret_key": "Ri21851619!",
+    "region_name": "us-east-1",
+    "verify_tls": false
+  },
+  "api": {
+    "enabled": true,
+    "base_url": "http://leakguard-api.homelab.local:8010",
+    "heartbeat_path": "/api/v1/agents/heartbeat",
+    "ingest_confirm_path": "/api/v1/ingest/confirm",
+    "bearer_token": "CHANGE_ME_LEAKGUARD_API_TOKEN",
+    "timeout_seconds": 5,
+    "heartbeat_interval_seconds": 15,
+    "agent_id": ""
+  }
+}

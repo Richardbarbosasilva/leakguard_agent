@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+
+  <?ifndef ProductVersion ?>
+    <?define ProductVersion = "1.0.0" ?>
+  <?endif?>
+  <?ifndef BundleDir ?>
+    <?define BundleDir = "..\bundle" ?>
+  <?endif?>
+  <?ifndef ScriptsDir ?>
+    <?define ScriptsDir = "..\scripts" ?>
+  <?endif?>
+
+  <Package
+    Name="Leakguard Agent"
+    Manufacturer="IMAIS - DTI"
+    Version="$(var.ProductVersion)"
+    UpgradeCode="B8A3F2D1-7E4C-4A9B-8F6D-2C1E5A3B7D9F"
+    Scope="perMachine">
+
+    <MajorUpgrade
+      DowngradeErrorMessage="Uma versao mais recente do Leakguard Agent ja esta instalada." />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <!-- MSI Properties for silent install -->
+    <Property Id="BEARER_TOKEN" Secure="yes" />
+    <Property Id="AGENT_ID" Value="[ComputerName]" Secure="yes" />
+    <Property Id="API_BASE_URL" Secure="yes" />
+    <Property Id="API_PORT" Value="8010" Secure="yes" />
+    <Property Id="STORAGE_HOST" Secure="yes" />
+    <Property Id="STORAGE_IP" Secure="yes" />
+    <Property Id="CONSOLE_HOST" Secure="yes" />
+    <Property Id="CONSOLE_IP" Secure="yes" />
+    <Property Id="API_HOST" Secure="yes" />
+    <Property Id="API_IP" Secure="yes" />
+
+    <StandardDirectory Id="ProgramFiles6432Folder">
+      <Directory Id="INSTALLFOLDER" Name="LeakguardAgent">
+
+        <Component Id="NssmExe" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567890">
+          <File Id="nssm" Source="$(var.BundleDir)\nssm.exe" KeyPath="yes" />
+        </Component>
+
+        <Component Id="ConfigTemplate" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567891">
+          <File Id="configtemplate" Source="$(var.BundleDir)\config-template.json" KeyPath="yes" />
+        </Component>
+
+        <Component Id="Requirements" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567892">
+          <File Id="requirements" Source="$(var.BundleDir)\requirements.txt" KeyPath="yes" />
+        </Component>
+
+        <Component Id="Logo" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567893">
+          <File Id="logo" Source="$(var.BundleDir)\logo.png" KeyPath="yes" />
+        </Component>
+
+        <Component Id="AgentExe" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567894">
+          <File Id="agentexe" Source="$(var.BundleDir)\ScreenshotAuditAgent.exe" KeyPath="yes" />
+        </Component>
+
+        <Component Id="InstallScript" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567895">
+          <File Id="installps1" Source="$(var.ScriptsDir)\Install-LeakguardAgent.ps1" KeyPath="yes" />
+        </Component>
+
+        <Component Id="UninstallScript" Guid="A1B2C3D4-E5F6-7890-ABCD-EF1234567896">
+          <File Id="uninstallps1" Source="$(var.ScriptsDir)\Uninstall-LeakguardAgent.ps1" KeyPath="yes" />
+        </Component>
+
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="Complete" Title="Leakguard Agent" Level="1">
+      <ComponentRef Id="NssmExe" />
+      <ComponentRef Id="ConfigTemplate" />
+      <ComponentRef Id="Requirements" />
+      <ComponentRef Id="Logo" />
+      <ComponentRef Id="AgentExe" />
+      <ComponentRef Id="InstallScript" />
+      <ComponentRef Id="UninstallScript" />
+    </Feature>
+
+    <!-- Post-install: run Install-LeakguardAgent.ps1 -->
+    <CustomAction
+      Id="RunInstallScript"
+      Directory="INSTALLFOLDER"
+      ExeCommand='powershell.exe -ExecutionPolicy Bypass -File "[INSTALLFOLDER]Install-LeakguardAgent.ps1" -BearerToken "[BEARER_TOKEN]" -AgentId "[AGENT_ID]" -ApiBaseUrl "[API_BASE_URL]" -ApiPort [API_PORT] -PrebuiltExe "[INSTALLFOLDER]ScreenshotAuditAgent.exe" -NssmPath "[INSTALLFOLDER]nssm.exe" -ConfigTemplate "[INSTALLFOLDER]config-template.json" -LogoFile "[INSTALLFOLDER]logo.png" -StorageHost "[STORAGE_HOST]" -StorageIp "[STORAGE_IP]" -ConsoleHost "[CONSOLE_HOST]" -ConsoleIp "[CONSOLE_IP]" -ApiHost "[API_HOST]" -ApiIp "[API_IP]"'
+      Execute="deferred"
+      Impersonate="no"
+      Return="check" />
+
+    <!-- Pre-uninstall: run Uninstall-LeakguardAgent.ps1 -->
+    <CustomAction
+      Id="RunUninstallScript"
+      Directory="INSTALLFOLDER"
+      ExeCommand='powershell.exe -ExecutionPolicy Bypass -File "[INSTALLFOLDER]Uninstall-LeakguardAgent.ps1" -RemoveHostEntries'
+      Execute="deferred"
+      Impersonate="no"
+      Return="ignore" />
+
+    <InstallExecuteSequence>
+      <Custom Action="RunInstallScript" After="InstallFiles">NOT Installed AND NOT REMOVE</Custom>
+      <Custom Action="RunUninstallScript" Before="RemoveFiles">REMOVE="ALL"</Custom>
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>

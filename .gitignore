@@ -1,0 +1,14 @@
+﻿output/
+_build/
+*.spec
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+dist/
+build/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+*.log
