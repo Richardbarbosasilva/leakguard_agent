@@ -1,5 +1,18 @@
 # Leakguard Agent - Windows Installer
 
+## Download
+
+<p align="center">
+  <a href="https://github.com/Richardbarbosasilva/leakguard_agent/releases/latest/download/LeakguardAgent-Setup-1.0.0.exe">
+    <img src="https://img.shields.io/badge/Download-EXE%20Installer-blue?style=for-the-badge&logo=windows" alt="Download EXE">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/Richardbarbosasilva/leakguard_agent/releases/latest/download/LeakguardAgent-Setup-1.0.0.msi">
+    <img src="https://img.shields.io/badge/Download-MSI%20Enterprise-green?style=for-the-badge&logo=windows" alt="Download MSI">
+  </a>
+</p>
+
+
 Instalador standalone para o Leakguard Agent, substituindo o deploy via Ansible
 por pacotes EXE (Inno Setup) e MSI (WiX Toolset) para instalacoes Windows.
 
